@@ -24,12 +24,7 @@ namespace cs225 {
         /**
          * Default constructor, completely opaque (alpha component of pixel is 1.0) and white
          */
-        HSLAPixel() {
-            a = 1;
-            h = 0;
-            l = 1;
-            s = 0;
-        }; 
+        HSLAPixel(); 
 
         /*
          * Constructs an opaque HSLAPixel with the given hue, saturation, and luminance values
@@ -38,12 +33,7 @@ namespace cs225 {
          * @param saturation Saturation value for the new pixel, [0, 1]
          * @param luminance Luminance value for the new pixel,
         */
-        HSLAPixel(double hue, double saturation, double luminance) {
-            h = hue;
-            s = saturation;
-            l = luminance;
-            a = 1;
-        };
+        HSLAPixel(double hue, double saturation, double luminance);
 
         /**
          * Constructs an HSLAPixel with the given hue, saturation, luminance, and alpha values
@@ -53,12 +43,7 @@ namespace cs225 {
          * @param luminance Luminance value for the new pixel, [0, 1]
          * @param alpha Alpha value for the new pixel, [0, 1]
          */
-         HSLAPixel(double hue, double saturation, double luminance, double alpha) {
-             h = hue;
-             s = saturation;
-             l = luminance;
-             a = alpha;
-         };
+         HSLAPixel(double hue, double saturation, double luminance, double alpha);
 
 
     };
