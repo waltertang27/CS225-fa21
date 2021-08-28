@@ -62,6 +62,18 @@ PNG grayscale(PNG image) {
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
 
+  for(unsigned int i = 0; i < image.width(); i++) {
+    for(unsigned int j = 0; j < image.height(); j++) {
+      HSLAPixel &p = image.getPixel(i, j);
+      double distance = sqrt((centerX - i) * (centerX - i) + (centerY - j) * (centerY - j));
+      if(distance > 160) {
+          p.l = p.l * .2;
+      }
+      else {
+        p.l = p.l * (1 - (distance * 0.005));
+      }
+    }
+  }
   return image;
   
 }
@@ -78,13 +90,39 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
  * @return The illinify'd image.
 **/
 PNG illinify(PNG image) {
+  int illini_orange = 11;
+  int illini_blue = 216;
 
+  for(unsigned int i = 0; i < image.width(); i++) {
+    for(unsigned int j = 0; j < image.height(); j++) {
+      HSLAPixel &p = image.getPixel(i, j);
+      if(p.h > illini_orange && p.h < illini_blue) {
+            if(abs(illini_orange - p.h) > abs(illini_blue - p.h)) {
+              p.h = illini_blue;
+            }
+            else {
+              p.h = illini_orange;
+            }
+      }
+      else if(p.h > illini_blue && p.h < 360) {
+        if(p.h - illini_blue < 360 - p.h + illini_orange) {
+          p.h = illini_blue;
+        }
+        else {
+          p.h = illini_orange;
+        }
+      }
+      else {
+        p.h = illini_orange;
+      }
+    }
+  }
   return image;
 }
  
 
 /**
-* Returns an immge that has been watermarked by another image.
+* Returns an image that has been watermarked by another image.
 *
 * The luminance of every pixel of the second image is checked, if that
 * pixel's luminance is 1 (100%), then the pixel at the same location on
@@ -96,6 +134,19 @@ PNG illinify(PNG image) {
 * @return The watermarked image.
 */
 PNG watermark(PNG firstImage, PNG secondImage) {
-
+  for(unsigned int i = 0; i < firstImage.width(); i++) {
+     for(unsigned int j = 0; j < firstImage.height(); j++) {
+       HSLAPixel &p1 = firstImage.getPixel(i, j); 
+       HSLAPixel &p2 = secondImage.getPixel(i, j);
+       if(p2.l == 1.0) {
+          if(p1.l + 0.2 > 1.0) {
+            p1.l = 1.0;
+          }
+          else {
+            p1.l = p1.l + 0.2;
+          }
+       }
+     }
+  }
   return firstImage;
 }
