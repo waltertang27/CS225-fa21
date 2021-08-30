@@ -54,6 +54,7 @@ cs225::PNG myArt(unsigned int width, unsigned int height) {
       }
       else if(i > 2 * height / 3) {
         p.h = 0;
+        p.l = 0.4;
       }
       else {
         p.l = 1;
