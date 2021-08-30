@@ -43,9 +43,12 @@ cs225::PNG myArt(unsigned int width, unsigned int height) {
   for(unsigned int i = 0; i < width; i++) {
     for(unsigned int j = 0; j < height; j++) {
       HSLAPixel &p = png.getPixel(i, j);
+      //adjust the values of a, l, s
       p.a = 1;
       p.l = 0.5;
       p.s = 1;
+
+      //draws the french flag
       if(i < height / 3) {
         p.h = 225;
       }
