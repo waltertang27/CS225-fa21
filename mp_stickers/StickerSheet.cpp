@@ -7,9 +7,9 @@
  * @param max The maximum number of stickers (Images) on this StickerSheet
  */
 StickerSheet::StickerSheet(const Image &picture, unsigned max) {
-    Image img = new Image();
-    *image = picture;
-    list = new Image*[max];
+   //Image img = new Image();
+   // *image = picture;
+   // list = new Image*[max];
 
 }
 
@@ -36,7 +36,8 @@ StickerSheet::StickerSheet(const StickerSheet &other) {
  * @return The zero-based layer index the sticker was added to, or -1 if the sticker cannot be added
  */
 int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
-
+    int count;
+    return count;
 }
 
 /**
