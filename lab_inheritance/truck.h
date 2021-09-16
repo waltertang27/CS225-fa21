@@ -18,11 +18,7 @@ class Truck : public Drawable
   private:
     Vector2 center_;
     Circle** wheels;
-    Rectangle* trailer;
-    Rectangle* cabin;
-    Rectangle* window;
-    Rectangle* engine;
-
+    Rectangle *trailer, *cabin, *window, *engine;
     void copy(const Truck& other);
     void clear();
 
@@ -33,5 +29,6 @@ class Truck : public Drawable
     Truck& operator=(const Truck& rhs);
     Vector2 center() const;
     void set_center(const Vector2& center);
+    void draw(cs225::PNG* canvas) const;
 };
 

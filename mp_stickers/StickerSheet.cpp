@@ -7,9 +7,21 @@
  * @param max The maximum number of stickers (Images) on this StickerSheet
  */
 StickerSheet::StickerSheet(const Image &picture, unsigned max) {
-   //Image img = new Image();
-   // *image = picture;
-   // list = new Image*[max];
+   *sticker = picture;
+   Image *list[max];
+   //Image *img = new Image();
+   //*img = picture;
+   unsigned x_coord[max];
+   unsigned y_coord[max];
+   int index[max];
+   for(unsigned i = 0; i < max; i++) {
+       list[i] = new Image();
+        x_coord[i] = 0;
+        y_coord[i] = 0;
+        index[i] = i;
+
+   }
+  
 
 }
 
@@ -25,6 +37,8 @@ StickerSheet::~StickerSheet() {
  * @param other The other StickerSheet object to copy data from
  */
 StickerSheet::StickerSheet(const StickerSheet &other) {
+    sticker = other.sticker;
+
 
 }
 /**
