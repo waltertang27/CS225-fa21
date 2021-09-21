@@ -72,48 +72,52 @@ int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
 * @param max The new value for the maximum number of Images in the StickerSheet
 */
 void StickerSheet::changeMaxStickers(unsigned max) {
- 
+  
   Image **list2 = new Image*[max];
   
   unsigned *x_coord2 = new unsigned[max];
   unsigned *y_coord2 = new unsigned[max];
  
   //for(unsigned int i = 0; )
-  if(layer > max) {
+  
+  for(unsigned i = 0; i < max; i++) {
+    list2[i] = NULL;
+  }
+  if(max > layer) {
    
-    for(unsigned i = 0; i < max; i++) {
+    for(unsigned i = 0; i < layer; i++) {
       
-      list2[i] = new Image;
+      list2[i] = new Image();
    
       *list2[i] = *list[i];
       x_coord2[i] = x_coord[i];
       y_coord2[i] = y_coord[i];
     }
- 
-    layer = max;
-    
   }
   else {
-   
-     for(unsigned i = 0; i < layer; i++) {
+     for(unsigned i = 0; i < max; i++) {
     
-       list2[i] = new Image;
+       list2[i] = new Image();
        *list2[i] = *list[i];
    
        x_coord2[i] = x_coord[i];
        y_coord2[i] = y_coord[i];
      }
+     layer = max;
   }
 
   deleteSticker();
  
   num = max;
   list = list2;
+  //delete[] list2;
   list2 = NULL;
 
   x_coord = x_coord2;
+  //delete[] x_coord2;
   x_coord2 = NULL;
   y_coord = y_coord2;
+  //delete[] y_coord2;
   y_coord2 = NULL;
 
 }
@@ -234,7 +238,7 @@ void StickerSheet::copy(const StickerSheet &other) {
   y_coord = new unsigned[num];
   layer = other.layer;
   list = new Image*[num];
-  for(unsigned i = 0; i < max; i++) {
+  for(unsigned i = 0; i < num; i++) {
     list[i] = NULL;
   }
   for(unsigned i = 0; i < layer; i++) {
