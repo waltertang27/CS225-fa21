@@ -27,7 +27,7 @@ class StickerSheet {
         
     private:
         Image **list;
-        Image picture;
+        Image pic;
         unsigned layer, num;
         unsigned *x_coord;
         unsigned *y_coord;

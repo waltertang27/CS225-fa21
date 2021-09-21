@@ -183,6 +183,9 @@ void Image::rotateColor(double degrees) {
             if(p.h > 360) {
                 p.h -= 360;
             }
+            else if(p.h < 0) {
+              p.h += 360;
+            }
         }
     }
 }
@@ -228,19 +231,20 @@ void Image::saturate(double amount) {
  * @param factor Scale factor
  */
 void Image::scale(double factor) {
-    int newHeight = factor * this->height();
-    int newWidth = factor * this->width();
+    unsigned newHeight = factor * this->height();
+    unsigned newWidth = factor * this->width();
     PNG *png = new PNG(*this);
     resize(newWidth, newHeight);
     for(unsigned int x = 0; x < this->width(); x++) {
-        unsigned int x2 = x / factor;
+        unsigned int x2 = 1.0 * x / factor;
         for(unsigned int y = 0; y < this->height(); y++) {
-            unsigned int y2 = y / factor;
+            unsigned int y2 = 1.0 * y / factor;
             HSLAPixel &p = this->getPixel(x, y);
             HSLAPixel &p2 = png->getPixel(x2, y2);
             p = p2;
         }
     }
+    delete png;
 
 }
 
@@ -250,25 +254,25 @@ void Image::scale(double factor) {
  * @param h desired height of the scaled Image
  */
 void Image::scale(unsigned w, unsigned h) {
-    unsigned int height = this->height();
-    unsigned int width = this->width();
-    int size2 = h / height;
-    int size1 = w / width;
+    unsigned height = this->height();
+    unsigned width = this->width();
+    double size2 = (1.0 * h) / height;
+    double size1 = (1.0 * w) / width;
     int factor;
-    if(size2 > size1) {
+    /*if(size2 > size1) {
         factor = size1;
     }
     else {
         factor = size2;
-    }
-    int newHeight = this->height() * factor;
-    int newWidth = this->width() * factor;
+    }*/
+    //int newHeight = this->height() * factor;
+    //int newWidth = this->width() * factor;
     PNG *png = new PNG(*this);
-    resize(newWidth, newHeight);
-    for(unsigned int x = 0; x < this->width(); x++) {
-        unsigned int x2 = x / factor;
-        for(unsigned int y = 0; y < this->height(); y++) {
-            unsigned int y2 = y / factor;
+    resize(w, h);
+    for(unsigned x = 0; x < this->width(); x++) {
+        unsigned x2 = ((1.0) * x) / size1;
+        for(unsigned y = 0; y < this->height(); y++) {
+            unsigned y2 = ((1.0) * y) / size2;
             HSLAPixel &p = this->getPixel(x, y);
             HSLAPixel &p2 = png->getPixel(x2, y2);
             p = p2;
