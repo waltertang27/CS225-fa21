@@ -20,9 +20,18 @@ class StickerSheet {
         void removeSticker(unsigned index);
         Image render() const;
         bool translate(unsigned index, unsigned x, unsigned y);
-
+        void deleteSticker();
+        void copy(const StickerSheet &other);
 
         const StickerSheet &operator= (const StickerSheet &other);
+        
+    private:
+        Image **list;
+        Image picture;
+        unsigned layer, num;
+        unsigned *x_coord;
+        unsigned *y_coord;
+        
 };
 
  
