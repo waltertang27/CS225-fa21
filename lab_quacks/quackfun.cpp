@@ -174,5 +174,5 @@ void scramble(queue<T>& q)
         //std::cout << "testing 162" << std::endl;
     }
     //std::cout << std::endl;
-    }
+    }  
 }
