@@ -148,15 +148,34 @@ typename List<T>::ListNode * List<T>::split(ListNode * start, int splitPoint) {
     return start;
   }
 
+  if(start->next == NULL) {
+    return start;
+  }
+  if(splitPoint >= length_) {
+    return start;
+  }
+
+  if(splitPoint == 0) {
+    return start;
+  }
+  
+
   ListNode * curr = start;
 
   for (int i = 0; i < splitPoint; i++) {
+    if(curr->next == NULL) {
+      return start;
+    }
     curr = curr->next;
+    
   }
-  curr->prev->next = NULL;
-  curr->prev = NULL;
-  
-  return curr;
+  if(curr != NULL) {
+    curr->prev->next = NULL;
+    curr->prev = NULL;
+    tail_ = curr->prev;
+    return curr;
+  }
+  return start;
 
 }
 
