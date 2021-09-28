@@ -37,11 +37,17 @@ TEST_CASE("List::insert contents", "[weight=4][part=1][valgrind]") {
     List<int> list;
 
     list.insertBack(3);
+    //std::cout << "passed" << std::endl;
     list.insertBack(2);
+    //std::cout << "passed" << std::endl;
     list.insertBack(1);
+    //std::cout << "passed" << std::endl;
     list.insertFront(3);
+    //std::cout << "passed" << std::endl;
     list.insertFront(2);
+    //std::cout << "passed" << std::endl;
     list.insertFront(1);
+    //std::cout << "passed" << std::endl;
 
     stringstream s;
     list.print(s);
