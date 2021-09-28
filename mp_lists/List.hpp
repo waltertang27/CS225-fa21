@@ -39,20 +39,25 @@ typename List<T>::ListIterator List<T>::end() const {
 template <typename T>
 void List<T>::_destroy() {
   /// @todo Graded in MP3.1
-  ListNode *cur;
-  ListNode *temp;
-  if(head_ != NULL) {
-    cur = head_->next;
+  if(length_ == 0) {
+    head_ = NULL;
+    tail_ = NULL;
+  }
+  else {
+    ListNode *cur;
+    ListNode *temp;
+    cur = head_;
     while(cur != NULL) {
       temp = cur->next;
       delete cur;
       cur = temp;
     }
-    delete head_;
-    //delete cur;
-    //delete temp;
+    head_ = NULL;
+    tail_ = NULL;
+    cur = NULL;
+    temp = NULL;
+    length_ = 0;
   }
-
 }
 
 
@@ -185,42 +190,59 @@ void List<T>::tripleRotate() {
     
     //temp2->next = temp->next;
     head_ = temp2->next;
+    //std::cout<<temp->data;
     temp2->next = temp->next;
     temp2->prev = temp;
     temp->next = temp2;
-    
+    //std::cout<<temp2->next->prev->data;
+    //if(temp2->next != NULL) {
+      //temp2->next->prev = temp2;
+      //std::cout<<"hello";
+      //std::cout<<temp2->data;
+    //}
+    //std::cout<<temp2->next->data;
     //std::cout<<temp2_->next->data;
     //temp->next = temp2;
     //temp2->prev = temp;
     //head_ = temp2->next;
     //temp = temp->next;
     count--;
+    temp2->next = temp2->next->next;
+
     //std::cout<<temp->data;
-    ListNode *n = temp2->next;
+    ListNode *n = temp2->next->prev;
+
     ListNode *n2 = n;
 
     //std::cout <<head_->data;
     //return;
     while(count != 0) {
       n2 = n2->next->next;
+      //std::cout<<n->next->data;
       //std::cout<<n2->data;
+      //std::cout<<n->prev;
+      //n->prev->next = n->next;
+      //n2->next = n;
+      //n->prev->next = n->next->next;
+      
+      //n->prev = n2;
+      //n2->next = n;
       n->next = n2->next;
       n->prev = n2;
       n2->next = n;
       if(n->next != NULL) {
+        //n->next->prev = n;
         n = n->next;
         n2 = n;
-        std::cout << "wasssup";
+        std::cout<<"goes here";
       }
+      //std::cout<<temp->next->next->data;
       count--;
-      std::cout << n->data<<std::endl;
-      std::cout << n2->next->data<<std::endl;
     }
     if(n->next == NULL) {
-      std::cout<<"hallo";
       tail_ = n;
     }
-    cout << tail_ ->data;
+    //std::cout << tail_ ->data;
     //n->next = NULL;
   }
     
