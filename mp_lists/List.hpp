@@ -210,8 +210,9 @@ void List<T>::tripleRotate() {
       if(n->next != NULL) {
         n = n->next;
         n2 = n;
-        std::cout<<"ok";
+        std::cout << "wasssup";
       }
+      count--;
       std::cout << n->data<<std::endl;
       std::cout << n2->next->data<<std::endl;
     }
