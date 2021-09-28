@@ -147,10 +147,7 @@ typename List<T>::ListNode * List<T>::split(ListNode * start, int splitPoint) {
   if(start == NULL) {
     return start;
   }
-
-  if(start->next == NULL) {
-    return start;
-  }
+  
   if(splitPoint >= length_) {
     return start;
   }
