@@ -122,6 +122,13 @@ class BinaryTree
         void mirror();
 
         /**
+         * helper function for mirror
+         * 
+         * @param n node to start
+         */
+        void mirrorHelper(Node *&n);
+
+        /**
          * isOrdered() function iterative version
          * @return True if an in-order traversal of the tree would produce a
          *  nondecreasing list output values, and false otherwise. This is also the
@@ -136,6 +143,8 @@ class BinaryTree
          *  criterion for a binary tree to be a binary search tree.
          */
         bool isOrderedRecursive() const;
+
+        bool isOrderedRecursive(Node *n, Node *l, Node *r) const;
 
         /**
          *  Uses vector to store values of the nodes of a binary tree in order.
