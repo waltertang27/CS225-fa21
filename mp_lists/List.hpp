@@ -287,6 +287,90 @@ void List<T>::reverse() {
 template <typename T>
 void List<T>::reverse(ListNode *& startPoint, ListNode *& endPoint) {
   /// @todo Graded in MP3.2
+  /*
+  if(startPoint == NULL) {
+    return;
+  }
+  else if(endPoint == NULL) {
+    return;
+  }
+  if(startPoint == endPoint) {
+    return;
+  }
+
+  ListNode *temp;
+  ListNode *cur = startPoint;
+
+  if(head_ == endPoint) {
+    head_= startPoint;
+  }
+  if(tail_ == startPoint) {
+    tail_ = endPoint;
+  }
+  ListNode *n = endPoint->next;
+  while(cur != n) {
+    temp = cur->prev;
+    cur->prev = cur->next;
+    cur->next = temp;
+    cur = cur->prev;
+  }
+  //std::cout<<"hello";
+  if(startPoint->prev == NULL) {
+    endPoint->prev = NULL;
+  }
+  else {
+    startPoint->prev->next = endPoint;
+    endPoint->prev = startPoint->prev;
+  }
+  if(endPoint->next == NULL) {
+    startPoint->next = NULL;
+  }
+  else {
+    startPoint->next = endPoint->next;
+    endPoint->next->prev = startPoint;
+  }
+  std::swap(startPoint, endPoint);
+  */
+ ListNode *cur = startPoint;
+ while(cur != NULL) {
+   ListNode *temp = cur->prev;
+   cur->prev = cur->next;
+   cur->next = temp;
+   cur = cur->prev;
+ }
+ std::cout<<"h1";
+ if(startPoint->next == NULL) {
+   endPoint->prev = NULL;
+ }
+ else {
+  ListNode *temp = startPoint->next;
+  temp->next = endPoint;
+  endPoint->prev = temp;
+  
+ }
+ std::cout<<"h2";
+ if(endPoint->prev == NULL) {
+   startPoint->next = NULL;
+ }
+ else {
+  ListNode *temp = endPoint->prev;
+  temp->prev = startPoint;
+  startPoint->next = temp;
+ }
+ //std::swap(startPoint, endPoint);
+
+ ListNode *temp = startPoint;
+ startPoint = endPoint;
+ endPoint = temp;
+
+ if(head_== endPoint) {
+   head_ = startPoint;
+ }
+ if(tail_ == startPoint) {
+   tail_ = endPoint;
+ }
+ 
+ std::cout<<"h3";
 }
 
 /**
@@ -298,6 +382,40 @@ void List<T>::reverse(ListNode *& startPoint, ListNode *& endPoint) {
 template <typename T>
 void List<T>::reverseNth(int n) {
   /// @todo Graded in MP3.2
+  if(n <= 1) {
+    return;
+  }
+  if(head_ == NULL) {
+    return;
+  }
+  if(n >= length_) {
+    reverse(head_, tail_);
+    return;
+  }
+  ListNode *cur = head_;
+  ListNode *temp = head_;
+  while(temp != NULL) {
+    for(int i = 1; i < n; i++) {
+      if(temp->next != NULL) {
+        temp = temp->next;
+      }
+      else {
+        return;
+      }
+    } 
+     std::cout<<"test1";
+     reverse(cur, temp);
+     std::cout<<"test2";
+     //if(temp->next == NULL) {
+     //  return;
+     //}
+     cur = temp->next;
+     temp = cur;
+     std::cout<<"test3";
+     if(temp == NULL) 
+     std::cout<<"hiyaaa";
+  }
+  std::cout<<"why am i segfaulting?";
 }
 
 
@@ -339,6 +457,7 @@ void List<T>::mergeWith(List<T> & otherList) {
 template <typename T>
 typename List<T>::ListNode * List<T>::merge(ListNode * first, ListNode* second) {
   /// @todo Graded in MP3.2
+
   return NULL;
 }
 
