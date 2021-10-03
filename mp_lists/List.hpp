@@ -288,15 +288,12 @@ template <typename T>
 void List<T>::reverse(ListNode *& startPoint, ListNode *& endPoint) {
   /// @todo Graded in MP3.2
   //edge cases
-  if(startPoint == NULL) {
+  if(startPoint == NULL || endPoint == NULL || startPoint == endPoint) {
     return;
   }
-  else if(endPoint == NULL) {
-    return;
-  }
-  if(startPoint == endPoint) {
-    return;
-  }
+  //if(startPoint == endPoint) {
+  //  return;
+  //}
  ListNode *cur = startPoint;
  ListNode *precur = startPoint->prev;
  ListNode *nextcur = endPoint->next;
