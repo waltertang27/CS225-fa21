@@ -270,6 +270,15 @@ void List<T>::tripleRotate() {
  */
 template <typename T>
 void List<T>::reverse() {
+  if(head_ == NULL) {
+    return;
+  }
+  if(length_ == 0) {
+    return;
+  }
+  if(tail_ == NULL) {
+    return;
+  }
   reverse(head_, tail_);
 }
 
@@ -352,13 +361,14 @@ void List<T>::reverseNth(int n) {
   if(n <= 1) {
     return;
   }
-  if(head_ == NULL) {
+  if(head_ == NULL || length_ == 0) {
     return;
   }
   if(n >= length_) {
     reverse(head_, tail_);
     return;
   }
+
   ListNode *cur = head_;
   ListNode *temp = head_;
   while(temp != NULL) {
