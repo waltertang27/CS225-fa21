@@ -27,12 +27,36 @@ double ImageTraversal::calculateDelta(const HSLAPixel & p1, const HSLAPixel & p2
 
   return sqrt( (h*h) + (s*s) + (l*l) );
 }
+/**
+ * Tests the bounds of the point and the PNG. 
+ * 
+ * @param p Point p to check x and y values of
+ * @return true if within bounds of PNG
+ * @return false if outside bounds of PNG
+ */
+bool ImageTraversal::Iterator::inBound(Point p) {
+  if(p.x < png.width() && p.y < png.height()) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Default iterator constructor.
  */
 ImageTraversal::Iterator::Iterator() {
   /** @todo [Part 1] */
+  done = true;
+}
+
+ImageTraversal::Iterator::Iterator(PNG png, Point start, double tolerance, ImageTraversal *position) {
+  this->png = png;
+  this->start = start;
+  this->tolerance = tolerance;
+  this->position = position;
+  done = false;
+  iterate = position->peek();
+  
 }
 
 /**
@@ -42,6 +66,64 @@ ImageTraversal::Iterator::Iterator() {
  */
 ImageTraversal::Iterator & ImageTraversal::Iterator::operator++() {
   /** @todo [Part 1] */
+  //if(position->peek() == NULL) {
+  //  return NULL;
+  //}
+  //Point temp = position->pop();
+  //position->setVisited(temp);
+  std::cout<<"74";
+  Point cur = position->pop();
+  position->setVisited(cur);
+  Point w(cur.x, cur.y - 1);
+  Point a(cur.x - 1, cur.y);
+  Point s(cur.x, cur.y + 1);
+  Point d(cur.x + 1, cur.y);
+  HSLAPixel &pixel = png.getPixel(start.x, start.y);
+  if(inBound(d)) {
+    HSLAPixel &p = png.getPixel(d.x, d.y);
+    if(calculateDelta(pixel, p) < tolerance) {
+      position->add(d);
+      std::cout<<"test d";
+    }
+  }
+  if(inBound(s)) {
+    HSLAPixel &p = png.getPixel(s.x, s.y);
+    if(calculateDelta(pixel, p) < tolerance) {
+      position->add(s);
+      std::cout<<"test s";
+    }
+  }
+  if(inBound(a)) {
+    HSLAPixel &p = png.getPixel(a.x, a.y);
+    if(calculateDelta(pixel, p) < tolerance) {
+      position->add(a);
+      std::cout<<"test a";
+    }
+  }
+  if(inBound(w)) {
+    HSLAPixel &p = png.getPixel(w.x, w.y);
+    if(calculateDelta(pixel, p) < tolerance) {
+      position->add(w);
+      std::cout << "test w";
+    }
+  }
+
+  if(position->empty()) {
+    done = true;
+    return *this;
+  }
+  
+  std::cout<<"116";
+  while(position->empty() == false && position->getVisited(position->peek())) {
+    position->pop();
+  }
+  if(position->empty()) {
+    done = true;
+    return *this;
+  }
+  else {
+    iterate = position->peek();
+  }
   return *this;
 }
 
@@ -52,7 +134,7 @@ ImageTraversal::Iterator & ImageTraversal::Iterator::operator++() {
  */
 Point ImageTraversal::Iterator::operator*() {
   /** @todo [Part 1] */
-  return Point(0, 0);
+  return iterate;
 }
 
 /**
@@ -62,6 +144,11 @@ Point ImageTraversal::Iterator::operator*() {
  */
 bool ImageTraversal::Iterator::operator!=(const ImageTraversal::Iterator &other) {
   /** @todo [Part 1] */
-  return false;
+  if(done == other.done) {
+    return false;
+  }
+  else {
+    return true;
+  }
 }
 

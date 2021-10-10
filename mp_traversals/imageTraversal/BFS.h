@@ -8,7 +8,7 @@
 #include <cmath>
 #include <list>
 #include <queue>
-
+#include <vector>
 #include "../cs225/PNG.h"
 #include "../Point.h"
 
@@ -31,8 +31,16 @@ public:
   Point pop();
   Point peek() const;
   bool empty() const;
+  bool getVisited(Point p);
+  void setVisited(Point p);
+
 
 private:
   /** @todo [Part 1] */
   /** add private members here*/
+  PNG png;
+  Point start;
+  double tolerance;
+  std::queue<Point> queue;
+  std::vector<std::vector<bool> > visited;
 };
