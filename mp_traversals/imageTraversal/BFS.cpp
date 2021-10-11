@@ -18,7 +18,8 @@ using namespace cs225;
  * Initializes a breadth-first ImageTraversal on a given `png` image,
  * starting at `start`, and with a given `tolerance`.
  * @param png The image this BFS is going to traverse
- * @param start The start point of this BFS
+ * @param start The start poin
+ * t of this BFS
  * @param tolerance If the current point is too different (difference larger than tolerance) with the start point,
  * it will not be included in this BFS
  */
@@ -28,14 +29,6 @@ BFS::BFS(const PNG & png, const Point & start, double tolerance) {
   this->start = start;
   queue.push(start);
   this->tolerance = tolerance;
-  visited.resize(png.width());
-  for(unsigned i = 0; i < png.width(); i++) {
-    visited[i].resize(png.height());
-    for(unsigned j = 0; j < png.height(); j++) {
-      visited[i][j] = false;
-    }
-  }
-  setVisited(this->start);
 }
 
 /**
@@ -86,12 +79,4 @@ Point BFS::peek() const {
 bool BFS::empty() const {
   /** @todo [Part 1] */
   return queue.empty();
-}
-
-bool BFS::getVisited(Point p) {
-  return visited[p.x][p.y];
-}
-
-void BFS::setVisited(Point p) {
-  visited[p.x][p.y] = true;
 }

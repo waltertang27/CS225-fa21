@@ -31,8 +31,8 @@ public:
   Point pop();
   Point peek() const;
   bool empty() const;
-  bool getVisited(Point p);
-  void setVisited(Point p);
+  //bool getVisited(Point p);
+  //void setVisited(Point p);
 
 
 private:
@@ -42,5 +42,5 @@ private:
   Point start;
   double tolerance;
   std::stack<Point> stack;
-  std::vector<std::vector<bool> > visited;
+  //std::vector<std::vector<bool> > visited;
 };

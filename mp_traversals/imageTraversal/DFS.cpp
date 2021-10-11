@@ -28,15 +28,7 @@ DFS::DFS(const PNG & png, const Point & start, double tolerance) {
   this->start = start;
   stack.push(start);
   this->tolerance = tolerance;
-  visited.resize(png.width());
-  for(unsigned i = 0; i < png.width(); i++) {
-    visited[i].resize(png.height());
-    for(unsigned j = 0; j < png.height(); j++) {
-      visited[i][j] = false;
-    }
-  }
-  setVisited(this->start);
-  
+
 }
 
 /**
@@ -88,12 +80,4 @@ Point DFS::peek() const {
 bool DFS::empty() const {
   /** @todo [Part 1] */
   return stack.empty();
-}
-
-bool DFS::getVisited(Point p) {
-  return visited[p.x][p.y];
-}
-
-void DFS::setVisited(Point p) {
-  visited[p.x][p.y] = true;
 }

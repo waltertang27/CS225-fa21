@@ -7,6 +7,7 @@
 #include "../cs225/HSLAPixel.h"
 #include "../cs225/PNG.h"
 #include "../Point.h"
+#include <vector> 
 
 using namespace cs225;
 
@@ -37,12 +38,12 @@ public:
 
     /** @todo [Part 1] */
     /** add member functions if neccesary*/
-    bool inBound(Point p);
 
   private:
     /** @todo [Part 1] */
     /** add private members here if neccesary*/
     ImageTraversal *position;
+    std::vector<std::vector<bool> > visited;
     PNG png;
     Point start;
     Point iterate;
@@ -83,10 +84,6 @@ public:
    * Virtual function. Derived class need to implement this
    */
   virtual bool empty() const = 0;
-
-  virtual bool getVisited(Point p) = 0;
-
-  virtual void setVisited(Point p) = 0;
 
 private:
   static double calculateDelta(const HSLAPixel & p1, const HSLAPixel & p2);  
