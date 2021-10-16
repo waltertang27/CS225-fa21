@@ -18,6 +18,7 @@ using namespace cs225;
  */
 FloodFilledImage::FloodFilledImage(const PNG & png) {
   /** @todo [Part 2] */
+  this->png = png;
 }
 
 /**
@@ -29,6 +30,8 @@ FloodFilledImage::FloodFilledImage(const PNG & png) {
  */
 void FloodFilledImage::addFloodFill(ImageTraversal & traversal, ColorPicker & colorPicker) {
   /** @todo [Part 2] */
+  images.push_back(&traversal);
+  colors.push_back(&colorPicker);
 }
 
 /**
@@ -52,6 +55,31 @@ void FloodFilledImage::addFloodFill(ImageTraversal & traversal, ColorPicker & co
  */ 
 Animation FloodFilledImage::animate(unsigned frameInterval) const {
   Animation animation;
+  PNG pngee = png;
   /** @todo [Part 2] */
+  for(unsigned i = 0; i < images.size(); i++) {
+    //ImageTraversal::Iterator iterator = images[i]->begin();
+    //ImageTraversal *temp = images.front();
+    //ColorPicker *color = colors.front();
+    //ImageTraversal *temp = images[i];
+    ImageTraversal::Iterator iterator = images[i]->begin();
+    ImageTraversal::Iterator end = images[i]->end();
+    ColorPicker *color = colors[i];
+    animation.addFrame(pngee);
+    unsigned count = 1;
+    //ImageTraversal::Iterator j = iterator;
+    while(iterator != end) {
+      HSLAPixel &p = pngee.getPixel((*iterator).x, (*iterator).y);
+      p = color->getColor((*iterator).x, (*iterator).y);
+      if(count % frameInterval == 0) {
+        animation.addFrame(pngee);
+      }
+      count++;
+      ++iterator;
+    }
+  
+  }
+  animation.addFrame(pngee);
+
   return animation;
 }

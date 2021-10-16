@@ -92,6 +92,8 @@ class AVLTree
      */
     V find(const K& key) const;
 
+    void newHeight(Node *&n);
+
     /**
      * Prints the function calls to a stream.
      * @param out The stream to print to (default is stdout)
