@@ -7,15 +7,18 @@
 using namespace cs225;
 
 
-MyColorPicker::MyColorPicker() {
-  
-}
 /**
  * Picks the color for pixel (x, y).
  * Using your own algorithm
  */
 HSLAPixel MyColorPicker::getColor(unsigned x, unsigned y) {
   /* @todo [Part 3] */
+  unsigned num;
+  num = x * x - y * y;
 
-  return HSLAPixel(255, 1, 0.5);
+  while(num > 360) {
+    num = num - 360;
+  }
+  std::cout << num << std::endl;
+  return HSLAPixel(num, 1, 0.5);
 }

@@ -20,12 +20,26 @@ int main() {
   // - The code below assumes you have an Animation called `animation`
   // - The code provided below produces the `myFloodFill.png` file you must
   //   submit Part 3 of this assignment -- uncomment it when you're ready.
-  
-  BFS bfs(png, Point(30, 30), 0.5);
-  
-  
+  //std::cout<<"first";
+  PNG png;
+  //std::cout<<"24";
+  png.readFromFile("tests/lantern.png");
+  //std::cout<<"bye";
+  FloodFilledImage dog(png);
+  //std::cout<<"hello";
+  BFS bfs(png, Point(100, 100), 0.5);
+  DFS dfs(png, Point(50, 50), 0.5);
+  MyColorPicker color;
 
-  PNG lastFrame = animation.getFrame( animation.frameCount() - 1 );
+
+
+
+  dog.addFloodFill(bfs, color);
+  dog.addFloodFill(dfs, color);
+  
+  Animation animation = dog.animate(2000000);
+
+  PNG lastFrame = animation.getFrame(animation.frameCount() - 1 );
   lastFrame.writeToFile("myFloodFill.png");
   animation.write("myFloodFill.gif");
   
