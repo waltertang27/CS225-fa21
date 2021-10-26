@@ -265,7 +265,7 @@ class KDTree
     
     void clear(KDTreeNode *subroot);
     void copy(KDTreeNode *first, KDTreeNode *second);
-    //void swap(KDTreeNode first, KDTreeNode second);
+
     unsigned partition(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned PivotIndex);
     Point<Dim> quickSelect(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned x);
   

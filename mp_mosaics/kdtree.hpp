@@ -154,35 +154,23 @@ KDTree<Dim>::~KDTree() {
    */
   clear(root);
 }
-/*
-//swaps the two points
-template <int Dim>
-void KDTree<Dim>::swap(KDTreeNode first, KDTreeNode second) {
-  KDTreeNode temp = first;
-  first = second;
-  second = temp;
-}
-*/
+
 
 template <int Dim>
 unsigned KDTree<Dim>::partition(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned pivotIndex) {
     Point<Dim> pivot = list[pivotIndex];
-    //swap(list[pivotIndex], list[right]);
     unsigned count = left;
     Point<Dim> temp = list[pivotIndex];
     list[pivotIndex] = list[right];
     list[right] = temp;
-    //pivotIndex = left;
     for(unsigned i = left; i < right; i++) {
       if(smallerDimVal(list[i], pivot, dim)) {
-        //swap(list[i], list[pivotIndex]);
         Point<Dim> temp2 = list[count];
         list[count] = list[i];
         list[i] = temp2;
         count++;
       }
     }
-    //swap(list[pivotIndex], list[right]);
     Point<Dim> temp3 = list[count];
     list[count] = list[right];
     list[right] = temp3;
