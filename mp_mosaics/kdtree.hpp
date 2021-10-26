@@ -197,59 +197,54 @@ Point<Dim> KDTree<Dim>::quickSelect(vector<Point<Dim> > &list, int dim, unsigned
 
 template <int Dim>
 Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim> &query, int dim, KDTreeNode *curRoot) const {
-  Point<Dim> p = curRoot->point;
-  Point<Dim> temp = curRoot->point;
-  bool recurse = false;
   if(curRoot->left == NULL && curRoot->right == NULL) {
      return curRoot->point;
   }
+  Point<Dim> p = curRoot->point;
+  Point<Dim> temp = p;
+  bool recurse = false;
+  //recurse = smallerDimVal(query, curRoot->point, dim);
   //checks for left subtree
-  if(smallerDimVal(query, curRoot->point, dim)) {
+  if(smallerDimVal(query, p, dim)) {
     recurse = true;
-  //  if(curRoot->right == NULL) {
-  //      p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
-  //  }
-  //  else {
-  //      p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
-  //  }
-    //recurse = true;
     if(curRoot->left != NULL) {
-      p = findNearestNeighbor(query, (dim + 1) & Dim, curRoot->left);
+      temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
     }
   }
   //otherwise, go right
-  /*
-  else {
+  else if (!smallerDimVal(query, p, dim)) {
     recurse = false;
-    if(curRoot->right == NULL) {
-      p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
+    if(curRoot->right != NULL) {
+      temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
     }
-    else {
-      p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
-    }
+ //   else {
+ //     p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+ //   }
       //recurse = false;
   }
-  */
- else if(!smallerDimVal(query, curRoot->point, dim)) {
-   if(curRoot->right != NULL) {
-     p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
-   }
- }
+  
+ //else if(!smallerDimVal(query, curRoot->point, dim) && curRoot->right != NULL) {
+ //  recurse = false;
+ //  temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+ //}
   //if curRoot is closer
-  if(shouldReplace(query, p, curRoot->point)) {
-    p = curRoot->point;
+  if(shouldReplace(query, p, temp)) {
+    p = temp;
   }
   double radius = findDistance(query, p);
-  double splitDistance = pow(curRoot->point[dim] - query[dim], 2);
+  double splitDistance = (curRoot->point[dim] - query[dim]) * (curRoot->point[dim] - query[dim]);
   if(radius >= splitDistance) {
       if(recurse && curRoot->right != NULL) {
         temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+        if(shouldReplace(query, p, temp)) {
+          p = temp;
+        }
       }
       else if(!recurse && curRoot->left != NULL) {
         temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left); 
-      }
-      if(shouldReplace(query, p, temp)) {
+        if(shouldReplace(query, p, temp)) {
           p = temp;
+        }
       }
   }
   return p;
