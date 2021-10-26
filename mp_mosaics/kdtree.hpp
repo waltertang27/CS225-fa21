@@ -34,7 +34,7 @@ template <int Dim>
 double KDTree<Dim>::findDistance(const Point<Dim> &first, const Point<Dim> &second) const{
   double distance = 0;
   for(int i = 0; i < Dim; i++) {
-      distance += pow(first[i] - second[i], 2);
+      distance += (first[i] - second[i]) * (first[i]- second[i]);
   }
   //return sqrt(distance);
   return distance;
@@ -48,7 +48,7 @@ bool KDTree<Dim>::shouldReplace(const Point<Dim>& target,
     /**
      * @todo Implement this function!
      */
-    double d1 = findDistance(potential, target);
+    double d1 = findDistance(target, potential);
     double d2 = findDistance(target, currentBest);
     if(d1 < d2) {
       return true;
@@ -154,7 +154,7 @@ KDTree<Dim>::~KDTree() {
    */
   clear(root);
 }
-
+/*
 //swaps the two points
 template <int Dim>
 void KDTree<Dim>::swap(KDTreeNode first, KDTreeNode second) {
@@ -162,27 +162,38 @@ void KDTree<Dim>::swap(KDTreeNode first, KDTreeNode second) {
   first = second;
   second = temp;
 }
+*/
 
 template <int Dim>
 unsigned KDTree<Dim>::partition(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned pivotIndex) {
     Point<Dim> pivot = list[pivotIndex];
-    swap(list[pivotIndex], list[right]);
-    pivotIndex = left;
+    //swap(list[pivotIndex], list[right]);
+    unsigned count = left;
+    Point<Dim> temp = list[pivotIndex];
+    list[pivotIndex] = list[right];
+    list[right] = temp;
+    //pivotIndex = left;
     for(unsigned i = left; i < right; i++) {
       if(smallerDimVal(list[i], pivot, dim)) {
-        swap(list[i], list[pivotIndex]);
-        pivotIndex++;
+        //swap(list[i], list[pivotIndex]);
+        Point<Dim> temp2 = list[count];
+        list[count] = list[i];
+        list[i] = temp2;
+        count++;
       }
     }
-    swap(list[pivotIndex], list[right]);
-    return pivotIndex;
+    //swap(list[pivotIndex], list[right]);
+    Point<Dim> temp3 = list[count];
+    list[count] = list[right];
+    list[right] = temp3;
+    return count;
 }
 template <int Dim>
 Point<Dim> KDTree<Dim>::quickSelect(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned x) {
   if(left == right) {
     return list[left];
   }
-  unsigned pivotIndex = rand() % (right - left + 1);
+  unsigned pivotIndex = (left + right) / 2;
   pivotIndex = partition(list, dim, left, right, pivotIndex);
   if(pivotIndex == x) {
     return list[x];
@@ -197,25 +208,34 @@ Point<Dim> KDTree<Dim>::quickSelect(vector<Point<Dim> > &list, int dim, unsigned
 
 template <int Dim>
 Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim> &query, int dim, KDTreeNode *curRoot) const {
+  if(curRoot == NULL) {
+    return NULL;
+  }
   if(curRoot->left == NULL && curRoot->right == NULL) {
      return curRoot->point;
   }
-  Point<Dim> p = curRoot->point;
-  Point<Dim> temp = p;
+  Point<Dim> nearest = curRoot->point;
+  Point<Dim> tempNearest = nearest;
   bool recurse = false;
   //recurse = smallerDimVal(query, curRoot->point, dim);
   //checks for left subtree
-  if(smallerDimVal(query, p, dim)) {
+  if(smallerDimVal(query, nearest, dim)) {
     recurse = true;
     if(curRoot->left != NULL) {
-      temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
+      nearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
+    }
+    else if(curRoot->right != NULL) {
+      nearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
     }
   }
   //otherwise, go right
-  else if (!smallerDimVal(query, p, dim)) {
+  else if (!smallerDimVal(query, nearest, dim)) {
     recurse = false;
     if(curRoot->right != NULL) {
-      temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+      nearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+    }
+    else if(curRoot->left != NULL) {
+      nearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left);
     }
  //   else {
  //     p = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
@@ -228,27 +248,29 @@ Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim> &query, int dim, KD
  //  temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
  //}
   //if curRoot is closer
-  if(shouldReplace(query, p, temp)) {
-    p = temp;
+  if(shouldReplace(query, nearest, curRoot->point)) {
+    nearest = curRoot->point;
   }
-  double radius = findDistance(query, p);
+
+  double radius = findDistance(query, nearest);
   double splitDistance = (curRoot->point[dim] - query[dim]) * (curRoot->point[dim] - query[dim]);
   if(radius >= splitDistance) {
       if(recurse && curRoot->right != NULL) {
-        temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
-        if(shouldReplace(query, p, temp)) {
-          p = temp;
+        tempNearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->right);
+        if(shouldReplace(query, nearest, tempNearest)) {
+          nearest = tempNearest;
         }
       }
       else if(!recurse && curRoot->left != NULL) {
-        temp = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left); 
-        if(shouldReplace(query, p, temp)) {
-          p = temp;
+        tempNearest = findNearestNeighbor(query, (dim + 1) % Dim, curRoot->left); 
+        if(shouldReplace(query, nearest, tempNearest)) {
+          nearest = tempNearest;
         }
       }
   }
-  return p;
+  return nearest;
 }
+
 
 template <int Dim>
 Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim>& query) const
@@ -256,7 +278,8 @@ Point<Dim> KDTree<Dim>::findNearestNeighbor(const Point<Dim>& query) const
     /**
      * @todo Implement this function!
      */
-
+    
     return findNearestNeighbor(query, 0, root);
+
 }
 

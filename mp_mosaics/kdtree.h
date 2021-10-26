@@ -262,9 +262,10 @@ class KDTree
     void buildTree(vector<Point<Dim> > &points, int dim, unsigned left, unsigned right, KDTreeNode *&curRoot);
     double findDistance(const Point<Dim> &first, const Point<Dim> &second) const;
     Point<Dim> findNearestNeighbor(const Point<Dim> &query, int dim, KDTreeNode *curRoot) const;
+    
     void clear(KDTreeNode *subroot);
     void copy(KDTreeNode *first, KDTreeNode *second);
-    void swap(KDTreeNode first, KDTreeNode second);
+    //void swap(KDTreeNode first, KDTreeNode second);
     unsigned partition(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned PivotIndex);
     Point<Dim> quickSelect(vector<Point<Dim> > &list, int dim, unsigned left, unsigned right, unsigned x);
   
