@@ -81,6 +81,9 @@ void KDTree<Dim>::clear(KDTreeNode *subroot) {
 //does a deep copy of another KDTreeNode. copies second into first
 template <int Dim>
 void KDTree<Dim>::copy(KDTreeNode *first, KDTreeNode *second) {
+  if(second == NULL) {
+    return;
+  }
   first = new KDTreeNode();
   first->point = second->point;
   copy(first->left, second->left);
