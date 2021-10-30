@@ -54,6 +54,12 @@ void SCHashTable<K, V>::insert(K const& key, V const& value)
      * @todo Implement this function.
      *
      */
+    elems++;
+    unsigned i = hashes::hash(key, size);
+    table[i].push_front(std::pair<K, V> (key, value));
+    if(shouldResize()) {
+        resizeTable();
+    }
 }
 
 template <class K, class V>
@@ -66,7 +72,22 @@ void SCHashTable<K, V>::remove(K const& key)
      * Please read the note in the lab spec about list iterators and the
      * erase() function on std::list!
      */
-    (void) key; // prevent warnings... When you implement this function, remove this line.
+    unsigned i = hashes::hash(key, size);
+    if(table[i].empty()) {
+        return;
+    }
+    //typename std::list<std::pair<K, V>>::iterator it = table[i].begin();
+    it = table[i].begin();
+    typename std::list<std::pair<K, V>>::iterator end = table[i].end();
+    while(it != end) {
+        if(it->first == key) {
+            table[i].erase(it);
+            elems--;
+            break;
+        }
+        ++it;
+    }
+
 }
 
 template <class K, class V>
@@ -76,7 +97,15 @@ V SCHashTable<K, V>::find(K const& key) const
     /**
      * @todo: Implement this function.
      */
-
+    unsigned i = hashes::hash(key, size);
+    typename std::list<std::pair<K, V>>::iterator it = table[i].begin();
+    typename std::list<std::pair<K, V>>::iterator end = table[i].end();
+    while(it != end) {
+        if(it->first == key) {
+            return it->second;
+        }
+        ++it;
+    }
     return V();
 }
 
@@ -134,4 +163,17 @@ void SCHashTable<K, V>::resizeTable()
      *
      * @hint Use findPrime()!
      */
+    size_t new_size = findPrime(2 * size);
+    std::list<std::pair<K, V> > *new_table = new std::list<std::pair<K, V> >[new_size];
+    for(size_t i = 0; i < size; i++) {
+        for(typename std::list<std::pair<K, V> >::iterator it = table[i].begin(); it != table[i].end(); it++) {
+            unsigned count = hashes::hash(it->first, new_size);
+            new_table[count].push_front(std::pair<K, V> (it->first, it->second));
+        }
+    }
+    size = new_size;
+    delete[] table;
+    table = new_table;
+
+
 }

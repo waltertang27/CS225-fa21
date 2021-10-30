@@ -80,8 +80,16 @@ void LPHashTable<K, V>::insert(K const& key, V const& value)
      * Also, don't forget to mark the cell for probing with should_probe!
      */
 
-    (void) key;   // prevent warnings... When you implement this function, remove this line.
-    (void) value; // prevent warnings... When you implement this function, remove this line.
+    unsigned i = hashes::hash(key, size);
+    while(table[i] != NULL) {
+        i = (i + 1) % size;
+    }
+    table[i] = new std::pair<K, V> (key, value);
+    should_probe[i] = true;
+    elems++;
+    if(shouldResize()) {
+        resizeTable();
+    }
 }
 
 template <class K, class V>
@@ -90,6 +98,15 @@ void LPHashTable<K, V>::remove(K const& key)
     /**
      * @todo: implement this function
      */
+    unsigned i = findIndex(key);
+    if(table[i] != NULL) {
+        delete table[i];
+        table[i] = NULL;
+        elems--;
+    }
+    else {
+        return;
+    }
 }
 
 template <class K, class V>
@@ -101,7 +118,15 @@ int LPHashTable<K, V>::findIndex(const K& key) const
      *
      * Be careful in determining when the key is not in the table!
      */
-
+    unsigned i = hashes::hash(key, size);
+    while(should_probe[i]) {
+        if(table[i] != NULL) {
+            if(table[i]->first == key) {
+                return i;
+            }
+        }
+        i = (i + 1) % size;
+    }
     return -1;
 }
 
@@ -159,4 +184,25 @@ void LPHashTable<K, V>::resizeTable()
      *
      * @hint Use findPrime()!
      */
+    size_t new_size = findPrime(2 * size);
+    std::pair<K, V> **new_table = new std::pair<K, V> *[new_size];
+    delete[] should_probe;
+    should_probe = new bool[new_size];
+    for(size_t i = 0; i < new_size; i++) {
+        new_table[i] = NULL;
+        should_probe[i] = false;
+    }
+    for(size_t i = 0; i < size; i++) {
+        if(table[i] != NULL) {
+            unsigned j = hashes::hash(table[i]->first, new_size);
+            while(new_table[j] != NULL) {
+                j = (j + 1) % new_size;
+            }
+            should_probe[j] = true;
+            new_table[j] = table[i];
+        }
+    }
+    delete[] table;
+    size = new_size;
+    table = new_table;
 }
