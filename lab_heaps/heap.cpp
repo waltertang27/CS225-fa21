@@ -63,8 +63,8 @@ void heap<T, Compare>::heapifyDown(size_t currentIdx)
     }
     size_t childIndex = maxPriorityChild(currentIdx);
     if(higherPriority(_elems[childIndex], _elems[currentIdx])) {
-        std::swap(_elems[childIdx], _elems[currentIdx]);
-        heapifyDown(childIdx);
+        std::swap(_elems[childIndex], _elems[currentIdx]);
+        heapifyDown(childIndex);
     }
 }
 
@@ -93,10 +93,11 @@ heap<T, Compare>::heap(const std::vector<T>& elems)
 {
     // @TODO Construct a heap using the buildHeap algorithm
     //_elems = {T()};
+    _elems = {T()};
     for(auto i : elems) {
         _elems.push_back(i);
     }
-    for(size_t j = _elems.size() - 1; i > 0; i--) {
+    for(size_t j = _elems.size() - 1; j > 0; j--) {
         heapifyDown(j);
     }
 }
@@ -137,7 +138,7 @@ void heap<T, Compare>::updateElem(const size_t & idx, const T& elem)
     // Corrects the heap to remain as a valid heap even after update
     T temp = _elems[idx];
     _elems[idx] = elem;
-    if(higherPriority(elem, temp) {
+    if(higherPriority(elem, temp)) {
         heapifyUp(idx);
     }
     else {
