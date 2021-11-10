@@ -5,6 +5,7 @@
 #include <vector>
 #include "cs225/PNG.h"
 #include "cs225/HSLAPixel.h"
+#include <stack>
 #include <cstdlib>
 #include <queue>
 #include <map>
@@ -29,19 +30,19 @@ You can not step off of the maze or through a wall.
 
 This function will be very helpful in solving the maze. It will also be used by the grading program to verify that your maze is a tree that occupies the whole grid, and to verify your maze solution. So make sure that this function works!
 */
-
+/*
 bool SquareMaze::canTravel(int x, int y, int dir) const{
     if(dir < 0 || dir > 3) {
         return false;
     }
     if(dir == 0) {
-        if(x > width) {
+        if(x >= width - 1) {
             return false;
         }
         return walls[x + width * y].first == 0;
     }
     if(dir == 1) {
-        if(y > height) {
+        if(y >= height - 1) {
             return false;
         }
         return walls[x + width * y].second == 0;
@@ -60,7 +61,29 @@ bool SquareMaze::canTravel(int x, int y, int dir) const{
     }
     return false;
 }
+*/
+bool 	SquareMaze::canTravel (int x, int y, int dir) const {
+  if(dir == 0) {
+    if(x>=width-1) return false;
+    return !walls[x+y*width].first;
+  }
+  if(dir == 1) {
+    if(y>= height -1) return false;
+    return !walls[x+y*width].second;
+  }
 
+  if(dir == 2) {
+    if(x<1) return false;
+    return !walls[x-1+y*width].first;
+  }
+
+  if(dir==3) {
+    if(y<1) return false;
+    return !walls[x+(y-1)*width].second;
+  }
+
+  return false;
+}
 
 /*
 Draws the maze without the solution.
@@ -70,14 +93,7 @@ First, create a new PNG. Set the dimensions of the PNG to (width*10+1,height*10+
 The resulting PNG will look like the sample image, except there will be no exit from the maze and the red line will be missing.
 */
 PNG* SquareMaze::drawMaze() const {
-    int newWidth = width * 10 + 1;
-    int newHeight = height * 10 + 1;
-    PNG *png = new PNG(newWidth, newHeight);
-  /*  for(int j = 0; j < png.height; j++) {
-        HSLAPixel &p = png->getPixel(0, j);
-        p.l = 0;
-    }
-    */
+    PNG *png = new PNG(width * 10 + 1, height * 10 + 1);
     for(int i = 0; i < width; i++) {
     
         for(int j = 0; j < height; j++) {
@@ -90,7 +106,6 @@ PNG* SquareMaze::drawMaze() const {
                     }
                 }
             }
-            
         //blacken top row
             if(i == 0) {
                 for(int k = 0; k < 10; k++) {
@@ -98,14 +113,12 @@ PNG* SquareMaze::drawMaze() const {
                     p1.l = 0;
                 }
             }
-            //blacken if is wall
             if(!canTravel(i, j, 0)) {
                 for(int k2 = 0; k2 <= 10; k2++) {
                     HSLAPixel &p3 = png->getPixel((i + 1) * 10, j * 10 + k2);
                     p3.l = 0;
                 }
             }
-            //blacken if is wall
             if(!canTravel(i, j, 1)) {
                 for(int k3 = 0; k3 <= 10; k3++) {
                     HSLAPixel &p4 = png->getPixel(i * 10 + k3, (j + 1) * 10);
@@ -229,8 +242,8 @@ void SquareMaze::makeMaze(int w, int h) {
             }
         }
     }
-    //std::cout<<width<<std::endl;
-    //std::cout<<height<<std::endl;
+    std::cout<<width<<std::endl;
+    std::cout<<height<<std::endl;
     
 
 }
@@ -239,7 +252,7 @@ void SquareMaze::makeMaze(int w, int h) {
 This function should be fast (constant time). You can assume that in grading we will not make your maze a non-tree and then call one of the other member functions. setWall should not prevent cycles from occurring, but should simply set a wall to be present or not present. Our tests will call setWall to copy a specific maze into your implementation.
 */
 void SquareMaze::setWall(int x, int y, int dir, bool exists) {
-    if(dir != 0 && dir != 1) {
+    if(dir != 0 || dir != 1) {
         return;
     }
     if(dir == 0) {
@@ -249,7 +262,7 @@ void SquareMaze::setWall(int x, int y, int dir, bool exists) {
         walls[x + width * y].second = exists;
     }
 }
-
+/*
 std::vector<int> SquareMaze::solveMaze() {
     
     std::vector<int> solve;
@@ -257,7 +270,7 @@ std::vector<int> SquareMaze::solveMaze() {
     std::map<int, int> walter;
     std::vector<bool> visited;
     std::queue<int> bfs;
-    std::vector<int> v;
+    std::stack<int> s;
     bfs.push(0);
     for(int i = 0; i < width * height; i++) {
         visited.push_back(false);
@@ -287,13 +300,6 @@ std::vector<int> SquareMaze::solveMaze() {
                 
             }
         }
-        if(canTravel(x, y, 3)) {
-            if(visited[temp - width] == false) {
-                bfs.push(temp - width);
-                walter.insert(std::pair<int, int>(temp-width, temp));
-                visited[temp - width] = true;
-            }
-        }
         if(canTravel(x, y, 2)) {
             if(visited[temp - 1] == false) {
                 bfs.push(temp - 1);
@@ -301,38 +307,194 @@ std::vector<int> SquareMaze::solveMaze() {
                 visited[temp - 1] = 1;
             }
         }
-    
+        if(canTravel(x, y, 3)) {
+            if(visited[temp - width] == false) {
+                bfs.push(temp - width);
+                walter.insert(std::pair<int, int>(temp-width, temp));
+                visited[temp - width] = true;
+            }
+        }
 
     }
     int count = width - 1;
     while(arjun[count] == arjun[count - 1]) {
         count = -1;
     }
-    
     int yash = arjun[count];
     while(yash != 0) {
         int i = walter[yash];
         if(yash == i + 1) {
-            v.push_back(0);
+            s.push(0);
         }
         else if(yash == i + width) {
-            v.push_back(1);
+            s.push(1);
 
         }
         else if(yash == i - width) {
-            v.push_back(3);
+            s.push(3);
         }
         else if(yash == i - 1) {
-            v.push_back(2);        
+            s.push(2);        
         }
         yash = i;
     }
         
-
-        for(int j = v.size() - 1; j >= 0; j--) {
-            solve.push_back(v[j]);
+        int size = s.size();
+        for(int j = 0; j < size; j++) {
+            solve.push_back(s.top());
+            s.pop();
         }
     
     return solve;
 }
+*/
+
+std::vector<int> SquareMaze::solveMaze(){
+  std::vector<int> path;
+
+  std::vector<int> bottom;
+  std::map<int, int> iter;
+  std::vector<bool> visited;
+
+  for(int i =0; i<width*height; i++){
+    visited.push_back(false);
+  }
+  std::queue<int> traversal;
+  traversal.push(0);
+  visited[0] = true;
+
+  while(!traversal.empty()) {
+    int node = traversal.front();
+    traversal.pop();
+    int x = node%width;
+    int y = node/width;
+    if(y == height -1) bottom.push_back(node);
+
+    if(canTravel(x,y, 0) && visited[node+1]== false) {
+      iter.insert(std::pair<int, int>(node+1, node));
+      visited[node+1]= true;
+      traversal.push(node+1);
+    }
+
+    if(canTravel(x,y, 1) && visited[node+width]== false) {
+      iter.insert(std::pair<int, int>(node+width, node));
+      visited[node+width]= true;
+      traversal.push(node+width);
+    }
+
+    if(canTravel(x,y, 2) && visited[node-1]== false) {
+      iter.insert(std::pair<int, int>(node-1, node));
+      visited[node-1]= true;
+      traversal.push(node-1);
+    }
+
+    if(canTravel(x,y, 3) && visited[node-width]== false) {
+      iter.insert(std::pair<int, int>(node-width, node));
+      visited[node-width]= true;
+      traversal.push(node-width);
+    }
+
+  }
+
+  std::stack<int> stack;
+  int last = width-1;
+  while(bottom[last] == bottom[last-1]) {
+    last=-1;
+  }
+  int begin = bottom[last];
+  while(begin !=0) {
+    int prev = iter[begin];
+    if(begin == prev+1) stack.push(0);
+    else if(begin == prev + width) stack.push(1);
+    else if(begin == prev-1) stack.push(2);
+    else if(begin == prev - width) stack.push(3);
+    begin = prev;
+  }
+
+  int size= stack.size();
+  for(int i=0; i<size; i++ ) {
+    path.push_back(stack.top());
+    stack.pop();
+  }
+  return path;
+
+}
+
+/*
+std::vector<int> SquareMaze::solveMaze(){
+    int x, y, curr_idx;
+    std::vector<int> prev_cell;  //stores the path of bfs
+    std::vector<int> distance;  //stores the distance of every cell from entrance
+    prev_cell.push_back(0); //entrance is visited
+    distance.push_back(0);
+    for(int i = 1; i < width * height; i++){
+      prev_cell.push_back(-1); //-1 = not visited
+      distance.push_back(0);
+    }
+    std::queue<int> bfs;
+    bfs.push(0);
+    while(!bfs.empty()){
+      curr_idx = bfs.front();
+      x = curr_idx % width;
+      y = curr_idx / width;
+      bfs.pop();
+
+      if(canTravel(x, y, 0)){
+        if(prev_cell[curr_idx + 1] == -1){
+          bfs.push(curr_idx + 1);
+          prev_cell[curr_idx + 1] = curr_idx;
+          distance[curr_idx + 1] = distance[curr_idx] + 1;
+        }
+      }
+      if(canTravel(x, y, 1)){
+        if(prev_cell[curr_idx + width] == -1){
+          bfs.push(curr_idx + width);
+          prev_cell[curr_idx + width] = curr_idx;
+          distance[curr_idx + width] = distance[curr_idx] + 1;
+        }
+      }
+      if(canTravel(x, y, 2)){
+        if(prev_cell[curr_idx - 1] == -1){
+          bfs.push(curr_idx - 1);
+          prev_cell[curr_idx - 1] = curr_idx;
+          distance[curr_idx - 1] = distance[curr_idx] + 1;
+        }
+      }
+      if(canTravel(x, y, 3)){
+        if(prev_cell[curr_idx - width] == -1){
+          bfs.push(curr_idx - width);
+          prev_cell[curr_idx - width] = curr_idx;
+          distance[curr_idx - width] = distance[curr_idx] + 1;
+        }
+      }
+    }
+    int longest_path = width * (height - 1);
+    for(int k = 0; k < width; k++){
+      if(distance[width * (height - 1) + k] > distance[longest_path]){
+        longest_path = width * (height - 1) + k;
+      }
+    }
+    destination = longest_path;
+    std::vector<int> solution;
+    curr_idx = destination; //uses curr_idx again
+    while(curr_idx != 0){
+      if(prev_cell[curr_idx] == curr_idx - 1){
+        solution.push_back(0);
+      }
+      if(prev_cell[curr_idx] == curr_idx - width){
+        solution.push_back(1);
+      }
+      if(prev_cell[curr_idx] == curr_idx + 1){
+        solution.push_back(2);
+      }
+      if(prev_cell[curr_idx] == curr_idx + width){
+        solution.push_back(3);
+      }
+      curr_idx = prev_cell[curr_idx];
+    }
+    reverse(solution.begin(), solution.end());
+
+  return solution;
+}
+*/
 

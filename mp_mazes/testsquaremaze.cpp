@@ -13,13 +13,13 @@
 int main()
 {
     SquareMaze m;
-    m.makeMaze(50, 50);
+    m.makeMaze(2, 2); 
     std::cout << "MakeMaze complete" << std::endl;
 
     cs225::PNG* unsolved = m.drawMaze();
-    unsolved->writeToFile("unsolved.png");
+    unsolved->writeToFile("unsolved.png"); 
     delete unsolved;
-    std::cout << "drawMaze complete" << std::endl;
+    std::cout << "drawMaze complete" << std::endl; 
 
     std::vector<int> sol = m.solveMaze();
     std::cout << "solveMaze complete" << std::endl;

@@ -18,4 +18,5 @@ class SquareMaze {
         int width, height;
         DisjointSets maze;
         std::vector<std::pair<bool, bool> > walls;
+       
 };
