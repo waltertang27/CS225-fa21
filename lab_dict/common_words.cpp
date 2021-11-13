@@ -22,6 +22,8 @@ using std::cout;
 using std::endl;
 using std::feof;
 
+using namespace std;
+
 string remove_punct(const string& str)
 {
     string ret;
@@ -48,12 +50,26 @@ void CommonWords::init_file_word_maps(const vector<string>& filenames)
         // file
         vector<string> words = file_to_vector(filenames[i]);
         /* Your code goes here! */
+        for(vector<string>::iterator j = words.begin(); j != words.end(); j++) {
+            file_word_maps[i][*j]++;
+        }
     }
 }
 
 void CommonWords::init_common()
 {
     /* Your code goes here! */
+    for(auto i: file_word_maps) {
+        for(auto j: i) {
+            map<string, unsigned int>::iterator it = common.find(j.first);
+            if(it != common.end()) {
+                common[j.first] += 1;
+            }
+            else {
+                common[j.first] = 1;
+            }
+        }
+    }
 }
 
 /**
@@ -65,6 +81,23 @@ vector<string> CommonWords::get_common_words(unsigned int n) const
 {
     vector<string> out;
     /* Your code goes here! */
+    for(auto &i : common) {
+        if(i.second == file_word_maps.size()) {
+            int count = 1;
+            for(auto &j : file_word_maps) {
+                if(j.at(i.first) < n) {
+                    count = 0;
+                    break;
+                }
+            }
+            if(count) {
+                out.push_back(i.first);
+            }
+
+    
+        }
+
+    }
     return out;
 }
 

@@ -22,7 +22,13 @@ using std::map;
 unsigned long fib(unsigned long n)
 {
     /* Your code goes here! */
-    return 0;
+    if(n == 0) {
+        return 0;
+    }
+    if(n == 1) {
+        return 1;
+    }
+    return fib(n - 1) + fib(n - 2);
 }
 
 /**
@@ -34,5 +40,15 @@ unsigned long fib(unsigned long n)
 unsigned long memoized_fib(unsigned long n)
 {
     /* Your code goes here! */
+    static map<unsigned long, unsigned long> m = {{0, 0}, {1, 1}};
+    map<unsigned long, unsigned long>::iterator it = m.find(n);
+    if(it != m.end()) {
+        return it->second;
+    }
+    else {
+        unsigned long ans = memoized_fib(n - 1) + memoized_fib(n - 2);
+        m[n] = ans;
+        return ans;
+    }
     return 0;
 }
