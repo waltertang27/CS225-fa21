@@ -254,17 +254,38 @@ void Image::scale(double factor) {
  * @param h desired height of the scaled Image
  */
 void Image::scale(unsigned w, unsigned h) {
+    PNG *newpng = new PNG(w, h);
+    for(unsigned i = 0; i < w; i++) {
+        for(unsigned j = 0; j < h; j++) {
+            HSLAPixel &p = newpng->getPixel(i, j);
+            unsigned matchi = (unsigned) (this->width() * i / w + .5);
+            unsigned matchj = (unsigned) (this->height() * j / h + .5);
+            p = this->getPixel(matchi, matchj);
+        }
+    }
+    this->resize(w, h);
+    for(unsigned i = 0; i < w; i++) {
+        for(unsigned j = 0; j < h; j++) {
+            HSLAPixel &p = newpng->getPixel(i, j);
+            HSLAPixel &p2 = this->getPixel(i, j);
+            p = p2;
+        }
+    }
+    delete newpng;
+
+
+    /*
     unsigned height = this->height();
     unsigned width = this->width();
     double size2 = (1.0 * h) / height;
     double size1 = (1.0 * w) / width;
     int factor;
-    /*if(size2 > size1) {
+    if(size2 > size1) {
         factor = size1;
     }
     else {
         factor = size2;
-    }*/
+    }
     //int newHeight = this->height() * factor;
     //int newWidth = this->width() * factor;
     PNG *png = new PNG(*this);
@@ -278,4 +299,5 @@ void Image::scale(unsigned w, unsigned h) {
             p = p2;
         }
     }
+    */
 }

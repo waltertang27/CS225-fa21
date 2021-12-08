@@ -17,9 +17,7 @@ StickerSheet::StickerSheet(const Image &picture, unsigned max) {
   //index = new int[max];
   layer = 0;
   for(unsigned i = 0; i < max; i++) {
-       list[i] = new Image();
-       x_coord[i] = 0;
-       y_coord[i] = 0;
+       list[i] = NULL;
        //index[i] = i;
  
   }
@@ -51,19 +49,19 @@ StickerSheet::StickerSheet(const StickerSheet &other) {
 * @return The zero-based layer index the sticker was added to, or -1 if the sticker cannot be added
 */
 int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
-   if(layer == num) {
-     return -1;
-   }
-   else {
-     //if(list[layer] == NULL) {
-      // list[layer] = new Image();
-     //}
+    
+   if(layer < num) {
+     if(list[layer] == NULL) {
+       list[layer] = new Image();
+     }
      *list[layer] = sticker;
-     x_coord[layer] = x;
      y_coord[layer] = y;
+     x_coord[layer]= x;
      layer++;
-     return layer - 1;
+     return (layer - 1);
    }
+   return -1;
+   
 }
  
 /**
@@ -72,12 +70,47 @@ int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
 * @param max The new value for the maximum number of Images in the StickerSheet
 */
 void StickerSheet::changeMaxStickers(unsigned max) {
-  
+  if(max == num) {
+    return;
+  }
   Image **list2 = new Image*[max];
   
   unsigned *x_coord2 = new unsigned[max];
   unsigned *y_coord2 = new unsigned[max];
- 
+
+  for(unsigned i = 0; i < max; i++) {
+    list2[i] = NULL;
+
+  }
+  if(layer < max) {
+    for(unsigned i = 0; i < layer; i++) {
+      list2[i] = new Image();
+      *list2[i] = *list[i];
+      x_coord2[i] = x_coord[i];
+      y_coord2[i] = y_coord[i];
+    }
+  }
+  else {
+    for(unsigned i = 0; i < max; i++) {
+      list2[i] = new Image();
+      *list2[i] = *list[i];
+      x_coord2[i] = x_coord[i];
+      y_coord2[i] = y_coord[i];
+    }
+    layer = max;
+  }
+  deleteSticker();
+  list = list2;
+  list2 = NULL;
+  y_coord = y_coord2;
+  y_coord2 = NULL;
+  x_coord = x_coord2;
+  x_coord2 = NULL;
+  num = max;
+
+
+
+ /*
   //for(unsigned int i = 0; )
   
   for(unsigned i = 0; i < max; i++) {
@@ -119,7 +152,7 @@ void StickerSheet::changeMaxStickers(unsigned max) {
   y_coord = y_coord2;
   //delete[] y_coord2;
   y_coord2 = NULL;
-
+  */
 }
  
 /**
@@ -153,13 +186,15 @@ const StickerSheet &StickerSheet::operator= (const StickerSheet &other) {
 */
 void StickerSheet::removeSticker(unsigned index) {
   if(layer > index) {
-    for(unsigned int i = index; i < layer - 1; i ++) {
+    for(unsigned i = index; i < layer - 1; i++) {
       *list[i] = *list[i + 1];
       x_coord[i] = x_coord[i + 1];
       y_coord[i] = y_coord[i + 1];
     }
     delete list[layer - 1];
-    num--;
+    list[layer] = NULL;
+    layer--;
+
   }
 }
  
@@ -171,6 +206,7 @@ void StickerSheet::removeSticker(unsigned index) {
 * @return an Image object representing the drawn scene
 */
 Image StickerSheet::render() const {
+  /*
   Image base;
   int width, height;
   for(unsigned i = 0; i < layer; i++) {
@@ -192,6 +228,36 @@ Image StickerSheet::render() const {
     }
   }
   return base;
+  */
+ 
+ unsigned width2 = pic.width();
+ unsigned height2 = pic.height();
+ for(unsigned i = 0; i < layer; i++) {
+   if(list[i] != NULL) {
+     if(list[i]->width() + x_coord[i] > width2) {
+       width2 = list[i]->width() + x_coord[i];
+     }
+     if(list[i]->height() + y_coord[i] > height2) {
+       height2 = list[i]->height() + y_coord[i];
+     }
+   }
+ }
+ Image im;
+ im = pic;
+ im.resize(width2, height2);
+ for(unsigned i = 0; i < layer; i++) {
+   if(list[i] != NULL) {
+      for(unsigned a = x_coord[i]; a < list[i]->width() + x_coord[i]; a++) {
+        for(unsigned b = y_coord[i]; b < list[i]->height() + y_coord[i]; b++) {
+          if(list[i]->getPixel((a - x_coord[i]), (b - y_coord[i])).a != 0) {
+            im.getPixel(a, b) = list[i]->getPixel((a - x_coord[i]), (b - y_coord[i]));
+
+          }
+        }
+      }
+   }
+ }
+  return im;
 }
  
 /**
@@ -204,12 +270,12 @@ Image StickerSheet::render() const {
 */
 bool StickerSheet::translate(unsigned index, unsigned x, unsigned y) {
    if(index >= layer) {
-       return 0;
+       return false;
    }
    else {
        x_coord[index] = x;
        y_coord[index] = y;
-       return 1;
+       return true;
    }
 }
  
@@ -226,8 +292,6 @@ void StickerSheet::deleteSticker() {
    delete[] y_coord;
    y_coord = NULL;
 
-   //delete[] index;
-   //index = NULL:
 }
  
 //copy
