@@ -7,8 +7,8 @@
 template <class T>
 List<T>::List() { 
   // @TODO: graded in MP3.1
-    ListNode* head_ = NULL;
-    ListNode* tail_ = NULL;
+    head_ = NULL;
+    tail_ = NULL;
     length_ = 0;
 }
 
@@ -28,7 +28,7 @@ typename List<T>::ListIterator List<T>::begin() const {
 template <typename T>
 typename List<T>::ListIterator List<T>::end() const {
   // @TODO: graded in MP3.1
-  return List<T>::ListIterator(tail_->next);
+  return List<T>::ListIterator(NULL);
 }
 
 
@@ -70,20 +70,7 @@ void List<T>::_destroy() {
 template <typename T>
 void List<T>::insertFront(T const & ndata) {
   /// @todo Graded in MP3.1
-  /*ListNode * newNode = new ListNode(ndata);
-  newNode -> next = head_;
-  newNode -> prev = NULL;
   
-  if (head_ != NULL) {
-    head_ -> prev = newNode;
-  }
-  if (tail_ == NULL) {
-    tail_ = newNode;
-  }
-  
-
-  length_++;
-  */
   ListNode *n = new ListNode(ndata);
   if(length_ == 0) {
     head_= n;
@@ -190,77 +177,36 @@ template <typename T>
 void List<T>::tripleRotate() {
   // @todo Graded in MP3.1
   
-  int count = length_ / 3;
-  if(length_ < 3) {
-      return;
-  }
-  else {
-    
-    ListNode *temp = head_;
-    //std::cout<<temp->data;
-    ListNode *temp2 = head_;
-
-    temp = temp->next->next;
-    //std::cout<<temp->data;
-
-    
-    //temp2->next = temp->next;
-    head_ = temp2->next;
-    //std::cout<<temp->data;
-    temp2->next = temp->next;
-    temp2->prev = temp;
-    temp->next = temp2;
-    //std::cout<<temp2->next->prev->data;
-    //if(temp2->next != NULL) {
-      //temp2->next->prev = temp2;
-      //std::cout<<"hello";
-      //std::cout<<temp2->data;
-    //}
-    //std::cout<<temp2->next->data;
-    //std::cout<<temp2_->next->data;
-    //temp->next = temp2;
-    //temp2->prev = temp;
-    //head_ = temp2->next;
-    //temp = temp->next;
-    count--;
-    temp2->next = temp2->next->next;
-
-    //std::cout<<temp->data;
-    ListNode *n = temp2->next->prev;
-
-    ListNode *n2 = n;
-
-    //std::cout <<head_->data;
-    //return;
-    while(count != 0) {
-      n2 = n2->next->next;
-      //std::cout<<n->next->data;
-      //std::cout<<n2->data;
-      //std::cout<<n->prev;
-      //n->prev->next = n->next;
-      //n2->next = n;
-      //n->prev->next = n->next->next;
-      
-      //n->prev = n2;
-      //n2->next = n;
-      n->next = n2->next;
-      n->prev = n2;
-      n2->next = n;
-      if(n->next != NULL) {
-        //n->next->prev = n;
-        n = n->next;
-        n2 = n;
-        std::cout<<"goes here";
-      }
-      //std::cout<<temp->next->next->data;
-      count--;
-    }
-    if(n->next == NULL) {
-      tail_ = n;
-    }
-    //std::cout << tail_ ->data;
-    //n->next = NULL;
-  }
+ ListNode *temp = head_;
+ int count = length_ / 3;
+ if(count > 0) {
+   head_ = head_->next;
+   head_->prev = NULL;
+ }
+ for(int i = 0; i < count; i++) {
+   if(temp->prev != NULL) {
+     temp->prev->next = temp->next;
+     temp->next->prev = temp->prev;
+   }
+   else {
+     temp->next->prev = NULL;
+   }
+   if(temp->next->next->next == NULL) {
+     temp->prev = temp->next->next;
+     temp->prev->next = temp;
+     temp->next = NULL;
+   }
+   else {
+     temp->next = temp->next->next->next;
+     temp->prev = temp->next->prev;
+     temp->next->prev = temp;
+     temp->prev->next = temp;
+   }
+   temp = temp->next;
+ }
+ if(temp == NULL) {
+   tail_ = tail_->next;
+ }
     
 }
 
@@ -270,15 +216,7 @@ void List<T>::tripleRotate() {
  */
 template <typename T>
 void List<T>::reverse() {
-  if(head_ == NULL) {
-    return;
-  }
-  if(length_ == 0) {
-    return;
-  }
-  if(tail_ == NULL) {
-    return;
-  }
+ 
   reverse(head_, tail_);
 }
 
@@ -306,32 +244,32 @@ void List<T>::reverse(ListNode *& startPoint, ListNode *& endPoint) {
  ListNode *cur = startPoint;
  ListNode *precur = startPoint->prev;
  ListNode *nextcur = endPoint->next;
+ ListNode *temp;
  while(cur != nextcur) {
-   ListNode *temp = cur->prev;
+   temp = cur->prev;
    cur->prev = cur->next;
    cur->next = temp;
    cur = cur->prev;
  }
  //std::cout<<"h1";
- if(precur == NULL) {
+ if(precur != NULL) {
+   precur->next = endPoint;
+   endPoint->prev = precur;
+ }
+ else {
    endPoint->prev = NULL;
  }
- else {
-  ListNode *temp = precur;
-  temp->next = endPoint;
-  endPoint->prev = temp;
-  
- }
  //std::cout<<"h2";
- if(nextcur == NULL) {
+ if(nextcur != NULL) {
+   startPoint->next = nextcur;
+   nextcur->prev = startPoint;
+ }
+ else {
    startPoint->next = NULL;
  }
- else {
-  ListNode *temp = nextcur;
-  temp->prev = startPoint;
-  startPoint->next = temp;
- }
- std::swap(startPoint, endPoint);
+ temp = startPoint;
+ startPoint = endPoint;
+ endPoint = temp;
 
   //ListNode *temp = startPoint;
   //startPoint = endPoint;
