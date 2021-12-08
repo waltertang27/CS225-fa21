@@ -54,7 +54,7 @@ int StickerSheet::addSticker(Image &sticker, unsigned x, unsigned y) {
      if(list[layer] == NULL) {
        list[layer] = new Image();
      }
-     *list[layer] = sticker;
+     *(list[layer]) = sticker;
      y_coord[layer] = y;
      x_coord[layer]= x;
      layer++;
@@ -185,6 +185,7 @@ const StickerSheet &StickerSheet::operator= (const StickerSheet &other) {
 * @param index The layer in which to delete the png
 */
 void StickerSheet::removeSticker(unsigned index) {
+  //delete list[index];
   if(layer > index) {
     for(unsigned i = index; i < layer - 1; i++) {
       *list[i] = *list[i + 1];
@@ -192,7 +193,7 @@ void StickerSheet::removeSticker(unsigned index) {
       y_coord[i] = y_coord[i + 1];
     }
     delete list[layer - 1];
-    list[layer] = NULL;
+    list[layer - 1] = NULL;
     layer--;
 
   }
@@ -281,7 +282,7 @@ bool StickerSheet::translate(unsigned index, unsigned x, unsigned y) {
  
 void StickerSheet::deleteSticker() {
  
-   for(unsigned i = 0; i < layer; i++) {
+   for(unsigned i = 0; i < num; i++) {
          delete list[i];
          list[i] = NULL;
    }
